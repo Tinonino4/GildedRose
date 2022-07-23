@@ -1,5 +1,6 @@
 package com.gildedrose;
 
+import org.approvaltests.combinations.CombinationApprovals;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,9 +13,34 @@ class GildedRoseShould {
     public static final String SULFURAS = "Sulfuras, Hand of Ragnaros";
     public static final int MAX_QUALITY = 50;
     public static final int MIN_QUALITY = 0;
+    public static final int DAYS_TO_SELL_ITEM_11 = 11;
+    public static final int DAYS_TO_SELL_ITEM_6 = 6;
+    public static final int DAYS_TO_SELL_ITEM_0 = 0;
 
     private Item[] arrayWith(Item item) {
         return new Item[]{item};
+    }
+
+    @Test
+    public void gildedRoseApprovalTest() {
+        CombinationApprovals.verifyAllCombinations(
+                this::updateItem,
+                new String[] {"anyitem", AGED_BRIE, BACKSTAGE_PASSES, SULFURAS},
+                new Integer[] {0, 11, 6},
+                new Integer[] {0, 48, 50}
+        );
+    }
+
+    private Item updateItem(String name, int sellIn, int quality) {
+        Item item = new ItemBuilder()
+                .setName(name)
+                .setSellIn(sellIn)
+                .setQuality(quality)
+                .createItem();
+
+        new GildedRose(arrayWith(item)).updateQuality();
+
+        return item;
     }
 
     @Test
